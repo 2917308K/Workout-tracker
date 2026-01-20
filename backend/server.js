@@ -32,5 +32,16 @@ app.post('/workouts', async (req, res) => {
   res.json(newWorkout);
 });
 
+app.put('/workouts/:id', async (req, res) => {
+  const { exercise, sets, reps, weight } = req.body;
+  const updatedWorkout = await Workout.findByIdAndUpdate(req.params.id, { exercise, sets, reps, weight }, { new: true });
+  res.json(updatedWorkout);
+});
+
+app.delete('/workouts/:id', async (req, res) => {
+  await Workout.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Workout deleted' });
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
