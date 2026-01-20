@@ -11,6 +11,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const workoutSchema = new mongoose.Schema({
+    exercise: String,
+    sets: Number,
+    reps: Number,
+    weight: Number,
+    date: {type : Date, default: Date.now},
+});
+const Workout = mongoose.model('Workout', workoutSchema);
+
+app.get('/workouts', async (req, res) => {
+  const workouts = await Workout.find().sort({ date: -1 });
+  res.json(workouts);
+});
+
+app.post('/workouts', async (req, res) => {
+  const { exercise, sets, reps, weight } = req.body;
+  const newWorkout = new Workout({ exercise, sets, reps, weight });
+  await newWorkout.save();
+  res.json(newWorkout);
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
